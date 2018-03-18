@@ -55,9 +55,7 @@ void loop() {
           Serial.println("Attempt");
           if(RF_Request()== 0){
               if(myData.access){
-                  digitalWrite(DOOR,LOW);
-                  Serial.println("Access Granted");
-                  delay(3000);
+                  Open_door();
               }else{
                   digitalWrite(DOOR,HIGH);
                   Serial.println("No Access");
@@ -73,6 +71,18 @@ void loop() {
     }
     digitalWrite(DOOR,HIGH);
     RFID_reset();
+  }else if(radio.available()){
+    if(RF24_GetReq()){
+      Serial.println("Message good");
+      if(myData.access){
+        RF24_Relpy();
+        Open_door();
+      }else{
+        Serial.println("No Access");
+      }
+    }else{
+      Serial.println("Message no good");
+    }
   }else{
     RFID_reset();
   }
@@ -184,4 +194,30 @@ int RF_Request(){
       }else
         return 3;
   }    
+  }
+bool RF24_GetReq(){
+  while (radio.available()) {                          // While there is data ready
+    radio.read( &myData, sizeof(myData) );             // Get the payload
+  }
+    radio.stopListening();
+    Serial.println("GOT");
+    if(myData.ack == 0){
+      return 1;
+    }
+    else{
+      return 0;
+      }
+}
+
+void RF24_Relpy(){
+  myData.ack = 1;
+  radio.write( &myData, sizeof(myData) );              // Send the final one back.      
+  radio.startListening();                              // Now, resume listening so we catch the next packets.     
+}
+
+void Open_door(){
+  digitalWrite(DOOR,LOW);
+  Serial.println("Access");
+  delay(3000);
+  digitalWrite(DOOR,HIGH);
   }
