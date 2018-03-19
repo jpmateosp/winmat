@@ -109,7 +109,7 @@ bool RF24_GetReq(){
         }
 }
 
-bool RF24_Relpy(){
+void RF24_Relpy(){
   myData.ack = 1;
   radio.write( &myData, sizeof(myData) );              // Send the final one back.      
   radio.startListening();                              // Now, resume listening so we catch the next packets.     

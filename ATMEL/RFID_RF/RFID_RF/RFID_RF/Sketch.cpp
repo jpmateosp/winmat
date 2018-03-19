@@ -1,8 +1,27 @@
+﻿/*Begining of Auto generated code by Atmel studio */
+#include <Arduino.h>
+
+/*End of auto generated code by Atmel studio */
+
 
 #include <SPI.h>        // RC522 Module uses SPI protocol
 #include <MFRC522.h>  // Library for Mifare RC522 Devices
 #include "RF24.h"
 #include <string.h>
+//Beginning of Auto generated function prototypes by Atmel Studio
+void RFID_init();
+bool getID();
+bool read_block();
+bool check_pass(byte* buf);
+void RFID_reset();
+void RF24_init();
+int RF_Request();
+bool RF24_GetReq();
+void RF24_Relpy();
+void Open_door();
+//End of Auto generated function prototypes by Atmel Studio
+
+
 
 #define DOOR  2
   
@@ -40,6 +59,14 @@ struct dataStruct{
 
 void setup() {
   pinMode(DOOR,OUTPUT);
+  pinMode(13,OUTPUT);
+  pinMode(12,INPUT);
+  pinMode(11,OUTPUT);
+  pinMode(10,OUTPUT);
+  pinMode(9,OUTPUT);
+  pinMode(7,OUTPUT);
+  pinMode(8,OUTPUT);
+
   digitalWrite(DOOR,HIGH);
   
   Serial.begin(9600);  // Initialize serial communications with PC
@@ -47,13 +74,17 @@ void setup() {
   
   RFID_init();
   RF24_init();
+  Serial.println("Ready");
 }
 
 void loop() {
   if(getID()){
+	  Serial.println("Detection");
     if(read_block()){
        if(check_pass(buffer)){
           Serial.println("Attempt");
+		  digitalWrite(10,HIGH);
+		  digitalWrite(7,LOW);
           if(RF_Request()== 0){
               if(myData.access){
                   Open_door();
@@ -71,8 +102,10 @@ void loop() {
         Serial.println("Try again");
     }
     digitalWrite(DOOR,HIGH);
+	digitalWrite(10,LOW);
+    digitalWrite(7,HIGH);
     RFID_reset();
-  }else if(radio.available()){
+ /* }else if(radio.available()){
     if(RF24_GetReq()){
       Serial.println("Message good");
       if(myData.access){
@@ -83,7 +116,7 @@ void loop() {
       }
     }else{
       Serial.println("Message no good");
-    }
+    }*/
   }else{
     RFID_reset();
   }
@@ -116,8 +149,6 @@ bool getID() {
     Serial.print(readCard[i], HEX);
   }
   Serial.println("");
-
-
   return 1;
 }
 bool read_block(){
