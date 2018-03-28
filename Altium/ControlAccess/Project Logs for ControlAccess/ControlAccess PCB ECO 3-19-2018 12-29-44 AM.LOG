@@ -1,0 +1,5 @@
+Removed Pin From Net: NetName=Vin Pin=U2-1
+Removed Pin From Net: NetName=VCC Pin=U2-2
+Added Pin To Net: NetName=VCC Pin=U2-1
+Added Pin To Net: NetName=Vin Pin=U2-2
+Added Room: Name=ControlAccess

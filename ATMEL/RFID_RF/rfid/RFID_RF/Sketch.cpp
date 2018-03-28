@@ -1,7 +1,16 @@
+﻿/*Begining of Auto generated code by Atmel studio */
+#include <Arduino.h>
+
+/*End of auto generated code by Atmel studio */
+
 #include <SPI.h>        // RC522 Module uses SPI protocol
 #include <MFRC522.h>  // Library for Mifare RC522 Devices
 #include "RF24.h"
 #include <string.h>
+//Beginning of Auto generated function prototypes by Atmel Studio
+//End of Auto generated function prototypes by Atmel Studio
+
+
 //Beginning of Auto generated function prototypes by Atmel Studio
 void RFID_init();
 bool getID();
